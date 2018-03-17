@@ -1,0 +1,9 @@
+[package]
+name = "rust-tracer"
+version = "0.1.0"
+authors = ["Eric Buss <ejrbuss@gmail.com>"]
+
+[dependencies]
+image = "*"
+rand = "*"
+rayon = "*"
