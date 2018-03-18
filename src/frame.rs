@@ -91,7 +91,7 @@ impl Frame {
     }
 
     /// Helper method renders and then saves the render to a file
-    pub fn render_to<P: AsRef<Path>>(&mut self, secne: &scene, path: P) {
+    pub fn render_to<P: AsRef<Path>>(mut self, scene: &Scene, path: P) {
         self.render(scene);
         self.save(path);
     }

@@ -74,23 +74,27 @@ pub fn random_scene(aspect: f64) -> Scene {
         }
     }
     objects.push((
-        Geo::sphere(Vec3::new(0.0, 1.0, 0.0), 1.0),
-        Material::dielectric(1.5),
+        Geo::sphere(Vec3::new(-4.0, 1.0, 0.0), 1.0),
+        Material::lambertian(Vec3::new(0.1, 0.6, 0.8)),
     ));
     objects.push((
-        Geo::sphere(Vec3::new(-4.0, 1.0, 0.0), 1.0),
-        Material::lambertian(Vec3::new(0.4, 0.2, 0.1)),
+        Geo::sphere(Vec3::new(0.0, 1.0, 0.0), 1.0),
+        Material::metal(Vec3::new(0.8, 0.6, 0.3), 0.3)
     ));
     objects.push((
         Geo::sphere(Vec3::new(4.0, 1.0, 0.0), 1.0),
-        Material::metal(Vec3::new(0.7, 0.6, 0.5), 0.0),
+        Material::dielectric(1.5),
+    ));
+    objects.push((
+        Geo::sphere(Vec3::new(4.0, 1.0, 0.0), -0.95),
+        Material::dielectric(1.5),
     ));
 
     let from = Vec3::new(13.0, 2.0, 3.0);
     let at = Vec3::new(0.0, 0.0, 0.0);
     let vup = Vec3::new(0.0, 1.0, 0.0);
     Scene::new(
-        Camera::new(from, at, vup, 20.0, aspect, Some((0.1, 10.0))),
+        Camera::new(from, at, vup, 20.0, aspect, Some((0.08, 10.0))),
         objects,
     )
 }

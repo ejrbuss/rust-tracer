@@ -15,11 +15,11 @@ mod material;
 mod scenes;
 
 use frame::Frame;
-use scene::random_scene;
+use scenes::random_scene;
 
 /// Configuration varibles
-const WIDTH: u32 = 3000;
-const HEIGHT: u32 = 2000;
+const WIDTH: u32 = 1500;
+const HEIGHT: u32 = 1000;
 const SAMPLES: u32 = 100;
 const ASPECT: f64 = (WIDTH as f64) / (HEIGHT as f64);
 
