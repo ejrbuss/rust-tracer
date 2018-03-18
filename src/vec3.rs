@@ -1,6 +1,6 @@
 use color::Color;
 
-use std::ops::{Neg, Add, Sub, Mul, Div};
+use std::ops::{Add, Div, Mul, Neg, Sub};
 use util::rand;
 
 #[derive(Debug, Clone, Copy)]
@@ -11,39 +11,46 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-
+    /// Creates a new vector with components (x, y, z)
     pub fn new(x: f64, y: f64, z: f64) -> Self {
         Vec3 { x, y, z }
     }
 
+    /// Creates a new zero vector (0, 0, 0)
     pub fn zeros() -> Self {
         Vec3::new(0.0, 0.0, 0.0)
     }
 
+    /// Creates a new ones vector (1, 1, 1)
     pub fn ones() -> Self {
         Vec3::new(1.0, 1.0, 1.0)
     }
 
+    /// Returns the dot product of vectors u and v
     pub fn dot(u: Vec3, v: Vec3) -> f64 {
         u.x * v.x + u.y * v.y + u.z * v.z
     }
 
+    /// Returns the cross product of vectors u and v
     pub fn cross(u: Vec3, v: Vec3) -> Self {
         Vec3::new(
             u.y * v.z - u.z * v.y,
-          -(u.x * v.z - u.z * v.x),
-            u.x * v.y - u.y * v.x
+            -(u.x * v.z - u.z * v.x),
+            u.x * v.y - u.y * v.x,
         )
     }
 
+    /// Returns the reflection of vector u around normal v
     pub fn reflect(u: Vec3, v: Vec3) -> Self {
         u - 2.0 * Vec3::dot(u, v) * v
     }
 
+    /// Returns the refraction of vector v pased the normal vector n if
+    /// possible. k represents ni/nt.
     pub fn refract(v: Vec3, n: Vec3, k: f64) -> Option<Self> {
         let uv = v.unit();
         let dt = Vec3::dot(uv, n);
-        let d  = 1.0 - k * k * (1.0 - dt * dt);
+        let d = 1.0 - k * k * (1.0 - dt * dt);
         if d > 0.0 {
             Some(k * (uv - n * dt) - n * d.sqrt())
         } else {
@@ -51,15 +58,17 @@ impl Vec3 {
         }
     }
 
+    /// Returns a random vector within the unit sphere
     pub fn rand() -> Self {
         loop {
-            let v = Vec3::new(rand(), rand(), rand());
-            if v.len() < 1.0 {
+            let v = 2.0 * Vec3::new(rand(), rand(), rand()) - Vec3::ones();
+            if v.mag() < 1.0 {
                 return v;
             }
         }
     }
 
+    /// Returns a racomd vector within the unit disc
     pub fn rand_disc() -> Self {
         loop {
             let v = 2.0 * Vec3::new(rand(), rand(), 0.0) - Vec3::new(1.0, 1.0, 0.0);
@@ -69,22 +78,25 @@ impl Vec3 {
         }
     }
 
+    /// Returns the magnitude of the vector, ie. its dot product with itself
     pub fn mag(self) -> f64 {
         Vec3::dot(self, self)
     }
 
+    /// Returns the length of the vector
     pub fn len(self) -> f64 {
         self.mag().sqrt()
     }
 
+    /// Returns an equivalent unit vector
     pub fn unit(self) -> Self {
         self / self.len()
     }
 
+    /// Converts the current vector to a color given a specific gamma correction
     pub fn color(&self, gamma: f64) -> Color {
         Color::fnew(self.x, self.y, self.z, gamma)
     }
-
 }
 
 impl Neg for Vec3 {
@@ -94,6 +106,7 @@ impl Neg for Vec3 {
     }
 }
 
+// Macro for generating binary vector operators
 macro_rules! vec3_binary_op {
     ($trait:ident, $func:ident, $op:tt) => (
 
@@ -123,6 +136,7 @@ macro_rules! vec3_binary_op {
     )
 }
 
+// Supported binary vector operators
 vec3_binary_op!(Add, add, +);
 vec3_binary_op!(Sub, sub, -);
 vec3_binary_op!(Mul, mul, *);

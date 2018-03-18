@@ -10,3 +10,35 @@ During my first week of working on this project I implemented the ray tracing fe
  - Integrating [rayon]() in order to trace in parallel opened a whole can of worms with `[type] cannot be shared safely between threads`
  - Deciding whether to implement Materials and Geometry as `traits`, `closures` or `enums` was a pain point. I started with traits but settles on enums for their simplicity.
  - The camera always has a bug.
+
+ ### Update
+
+ After looking closer at the images being produced by my ray tracer it was clear that there was something wrong in my implementation. The error was in my implementation of random unit sphere vectors.
+
+ At some point I rewrote `vec3.rs` and didn't think carefully about what this function actually needed to do. That implementation looked like this:
+
+ ```rust
+ pub fn rand() -> Self {
+     loop {
+         let v = Vec3::new(rand(), rand(), rand())l
+         if v.mag() < 1.0 {
+             return v;
+         }
+     }
+ }
+ ```
+
+ Which suffers the obvious problem of only producing random vectors in 1/8th of the unit sphere. The new (and hopefully correct) implementation is:
+
+ ```rust
+pub fn rand() -> Self {
+    loop {
+        let v = 2.0 * Vec3::new(rand(), rand(), rand()) - Vec3::ones();
+        if v.mag() < 1.0 {
+            return v;
+        }
+    }
+}
+ ```
+
+ The effect produced by this bug was still interesting, and may be worth reinvestigating as a filter of some kind.
