@@ -1,11 +1,12 @@
 use rayon::prelude::*;
 use std::path::Path;
 use std::fs::File;
+use std::io::{ Write, stdout };
 use vec3::Vec3;
 use util::rand;
 use shader::shader;
 use scene::Scene;
-use image::{ImageBuffer, ImageRgb8, Rgb, PNG};
+use image::{ImageBuffer, ImageRgb8, Rgb, ImageFormat, };
 
 const GAMMA: f64 = 0.5;
 
@@ -56,6 +57,8 @@ impl Frame {
     /// `scene` the scene to render
     ///
     pub fn render(&mut self, scene: &Scene) {
+        print!("Rendering {} rays...", self.width * self.height * self.samples);
+        stdout().flush().unwrap();
         // In parallel shade the pixels
         let pixels: Vec<_> = self.coords
             .par_iter()
@@ -73,11 +76,13 @@ impl Frame {
                 (sum / (self.samples as f64)).color(GAMMA).rgb()
             })
             .collect();
-
+        print!("done.\nWriting render to buffer...");
+        stdout().flush().unwrap();
         // Synchronously update the buffer
         for (x, y, pixel) in self.buffer.enumerate_pixels_mut() {
             *pixel = pixels[(y * self.width + x) as usize];
         }
+        println!("done.");
     }
 
     /// Save the frame as is to a file.
@@ -85,14 +90,22 @@ impl Frame {
     /// # Arugments
     /// `path` - the path to the file location
     ///
-    pub fn save<P: AsRef<Path>>(self, path: P) {
+    pub fn save<P: AsRef<Path>>(self, path: P, format: ImageFormat) {
+        print!("Saving to disc...");
+        stdout().flush().unwrap();
         let ref mut file = File::create(path).unwrap();
-        ImageRgb8(self.buffer).save(file, PNG).unwrap();
+        ImageRgb8(self.buffer).save(file, format).unwrap();
+        println!("done.");
     }
 
     /// Helper method renders and then saves the render to a file
-    pub fn render_to<P: AsRef<Path>>(mut self, scene: &Scene, path: P) {
+    pub fn render_to<P: AsRef<Path>>(
+        mut self,
+        scene: &Scene,
+        path: P,
+        format: ImageFormat
+    ) {
         self.render(scene);
-        self.save(path);
+        self.save(path, format);
     }
 }

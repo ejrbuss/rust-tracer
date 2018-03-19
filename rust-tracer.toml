@@ -1,0 +1,6 @@
+format = "PNG"
+out = "./out.png"
+scene = "two_perlin_spheres"
+samples = 200
+width = 1200
+height = 600

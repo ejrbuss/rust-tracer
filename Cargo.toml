@@ -7,3 +7,6 @@ authors = ["Eric Buss <ejrbuss@gmail.com>"]
 image = "*"
 rand = "*"
 rayon = "*"
+serde = "*"
+serde_derive = "*"
+toml = "*"

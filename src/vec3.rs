@@ -1,6 +1,6 @@
 use color::Color;
 
-use std::ops::{Add, Div, Mul, Neg, Sub};
+use std::ops::{Add, Div, Mul, Neg, Sub, Index};
 use util::rand;
 
 #[derive(Debug, Clone, Copy)]
@@ -103,6 +103,18 @@ impl Neg for Vec3 {
     type Output = Self;
     fn neg(self) -> Self {
         Vec3::new(-self.x, -self.y, -self.z)
+    }
+}
+
+impl Index<u32> for Vec3 {
+    type Output = f64;
+    fn index(&self, i: u32) -> &f64 {
+        match i {
+            0 => &self.x,
+            1 => &self.y,
+            2 => &self.z,
+            _ => panic!("unexpected vector index {}!", i),
+        }
     }
 }
 
